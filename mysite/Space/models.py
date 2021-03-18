@@ -40,7 +40,7 @@ class Satelite(models.Model):
         return self._distance
 
     def get_location(self):
-        if (self._latitude!=0.0 and self._longitude!=0.0):
+        if self._latitude!=0.0 and self._longitude!=0.0:
             return {'x':self._longitude, 'y': self._latitude}
         return None
         

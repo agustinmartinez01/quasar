@@ -15,6 +15,6 @@ space_list = views.SpaceViewSet.as_view({
 })
 
 urlpatterns = [
-    url(r'^/satelite/$', space_list, name='space_list'),
-    url(r'^/satelite/(?P<slug>[-\w\d]+)', space_detail, name='space_detail'),
+    url(r'^satelite/$', space_list, name='space_list'),
+    url(r'^satelite/(?P<slug>[-\w\d]+)', space_detail, name='space_detail'),
 ]

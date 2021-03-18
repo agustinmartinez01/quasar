@@ -36,17 +36,23 @@ class ConcreteMediator(Mediator):
         self._satelite3.mediator = self
         self.message = ''
 
-    def getAllLocation(self):
-        return (self._satelite1.get_location() !=None and self._satelite2.get_location()!=None and self._satelite3.get_location()!=None)
 
-    def getAllDistance(self):
-        return (self._satelite1.get_distance() !=None and self._satelite2.get_distance()!=None and self._satelite3.get_distance()!=None)
+    def get_all_location(self):
+        return self._satelite1.get_location() is not None and self._satelite2.get_location() is not None and self._satelite3.get_location() is not None
 
-    def getAllMessage(self):
-        return (self._satelite1.get_message() !=None and self._satelite2.get_message()!=None and self._satelite3.get_message()!=None)
+    def get_all_distance(self):
+        return self._satelite1.get_distance() is not None and self._satelite2.get_distance() is not None and self._satelite3.get_distance() is not None
 
-    def getLocation(self):
-        if self.getAllLocation() and self.getAllDistance() :
+    def get_all_message(self):
+        return self._satelite1.get_message() is not None and self._satelite2.get_message() is not None and self._satelite3.get_message() is not None
+
+    def get_location(self):
+        """
+            :param parser: TSelf instance
+            :return: resulting point
+
+        """
+        if self.get_all_location() and self.get_all_distance():
             return self.trilateracion(
                 self._satelite1.get_location(),
                 self._satelite1.get_distance(),
@@ -56,14 +62,15 @@ class ConcreteMediator(Mediator):
                 self._satelite3.get_distance(),
             )
             
-        else:
-            return {'x':None, 'y':None}
+        return {'x':None, 'y':None}
 
-    def get_message_phrases(self, phrases):
-        data = list(set(phrases))
-        return data.remove('')
 
-    def get_first_leters(self, array1, array2, array3, index):
+    def get_phrase(self, array1, array2, array3, index):
+        """
+            :param parser: Three Arrays and one positions index result
+            :return: resulting message
+
+        """
         if array1[index] != '':
             return array1[index]
         elif array2[index] != '':
@@ -74,21 +81,29 @@ class ConcreteMediator(Mediator):
             array1.pop(index)
             array2.pop(index)
             array3.pop(index)
-            return self.get_first_leters(array1, array2, array3, index)
+            return self.get_phrase(array1, array2, array3, index)
 
 
 
     def get_message(self):
+        """
+            :param parser: Self instance
+            :return: message resultant
+        """
         message = ''
-        if self.getAllMessage():
+        if self.get_all_message():
             size_min_message = min(min(len(self._satelite1.get_message()), len(self._satelite2.get_message())), len(self._satelite3.get_message()))
-            for index in list(range(size_min_message)):
-                message = message + self.get_first_leters(self._satelite1.get_message(), self._satelite2.get_message(), self._satelite3.get_message(), index)
+            for index in list(range(size_min_message-1)):
+                message = message + self.get_phrase(self._satelite1.get_message(), self._satelite2.get_message(), self._satelite3.get_message(), index)
 
         return message
             
 
     def trilateracion(self, point_a, dist_a, point_b, dist_b, point_c, dist_c):
+        """
+            :param parser: Point_a Point_b Point_c Distance_a Distance_b Distance_c
+            :return: {x:Float, y:Float} Longitude and Latitude
+        """
         earthR = 6371  
 
         xA = earthR *(math.cos(math.radians(point_a['y'])) * math.cos(math.radians(point_a['x'])))
