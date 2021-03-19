@@ -1,16 +1,10 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
-from django_extensions.db.fields import SlugField
 # Create your models here.
 class Satelite(models.Model):
     """
     Model entitie Satelite
     """
-    slug = SlugField(
-        db_index=True,
-        unique=True,
-        blank=True
-        )
     name = models.CharField(
         null=False, 
         max_length=100,
