@@ -8,7 +8,8 @@ class Satelite(models.Model):
     name = models.CharField(
         null=False, 
         max_length=100,
-        default=''
+        default='',
+        unique=True,
         )
     _distance = models.FloatField(null=False, default=0.0)
     _latitude =  models.FloatField(null=True)
@@ -37,6 +38,6 @@ class Satelite(models.Model):
         if self._latitude!=0.0 and self._longitude!=0.0:
             return {'x':self._longitude, 'y': self._latitude}
         return None
-        
+
     def get_message(self):
         return self._message

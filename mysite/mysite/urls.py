@@ -11,5 +11,5 @@ router = routers.SimpleRouter()
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^space/', include('Space.urls')),
+    url(r'^api/', include('Space.urls')),
 ]

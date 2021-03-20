@@ -1,7 +1,7 @@
-from abc import ABC
 import math
 import numpy
-
+from abc import ABC
+import traceback
 
 class Mediator(ABC):
     """
@@ -10,14 +10,14 @@ class Mediator(ABC):
     pass the execution to other components.
     """
 
-    def getLocation(self, distances):
+    def get_ocation(self, distances):
         """
         :param parser: Float
-        :return: {x:Float, y:Float} 
+        :return: Float, Float
         """
         pass
 
-    def getMessage(self, message):
+    def get_message(self, message):
         """
         :param parser: [strings]
         :return: message
@@ -38,6 +38,10 @@ class ConcreteMediator(Mediator):
 
 
     def get_all_location(self):
+        """
+
+        :return: Bool
+        """
         return self._satelite1.get_location() is not None and self._satelite2.get_location() is not None and self._satelite3.get_location() is not None
 
     def get_all_distance(self):
@@ -48,7 +52,7 @@ class ConcreteMediator(Mediator):
 
     def get_location(self):
         """
-            :param parser: TSelf instance
+            :param parser: Self instance
             :return: resulting point
 
         """
@@ -62,90 +66,115 @@ class ConcreteMediator(Mediator):
                 self._satelite3.get_distance(),
             )
             
-        return {'x':None, 'y':None}
+        return None, None
 
 
     def get_phrase(self, array1, array2, array3, index):
         """
             :param parser: Three Arrays and one positions index result
-            :return: resulting message
+            :return: resulting message partial
 
         """
-        if array1[index] != '':
-            return array1[index]
-        elif array2[index] != '':
-            return array2[index]
-        elif array3[index] != '':
-            return array3[index]
-        else:
-            array1.pop(index)
-            array2.pop(index)
-            array3.pop(index)
-            return self.get_phrase(array1, array2, array3, index)
+        try:
+            if array1[index] != '':
+                return array1[index]
+            elif array2[index] != '':
+                return array2[index]
+            elif array3[index] != '':
+                return array3[index]
+            else:
+                array1.pop(index)
+                array2.pop(index)
+                array3.pop(index)
+                return self.get_phrase(array1, array2, array3, index)
+        except Exception:
+            return None
 
 
 
     def get_message(self):
         """
             :param parser: Self instance
-            :return: message resultant
+            :return: message resultant complete
         """
         message = ''
+        data_message = None
         if self.get_all_message():
             size_min_message = min(min(len(self._satelite1.get_message()), len(self._satelite2.get_message())), len(self._satelite3.get_message()))
+            size_max_message = max(max(len(self._satelite1.get_message()), len(self._satelite2.get_message())),
+                                   len(self._satelite3.get_message()))
+            print(size_min_message-1)
             for index in list(range(size_min_message-1)):
-                message = message + self.get_phrase(self._satelite1.get_message(), self._satelite2.get_message(), self._satelite3.get_message(), index)
+                data_message = self.get_phrase(self._satelite1.get_message(), self._satelite2.get_message(), self._satelite3.get_message(), index)
+                if data_message is not None:
+                    message = message+" " + data_message
+                else:
+                    break
 
-        return message
+            if data_message is not None and len(self._satelite1.get_message()) == size_max_message  and self._satelite1.get_message()[size_max_message-1]!='':
+                message = message + ' ' + self._satelite1.get_message().pop(size_max_message-1)
+            elif len(self._satelite2.get_message()) ==size_max_message and self._satelite2.get_message()[size_max_message-1]!='':
+                message = message + ' ' + self._satelite2.get_message().pop(size_max_message-1)
+            elif len(self._satelite3.get_message()) ==size_max_message and self._satelite3.get_message()[size_max_message-1]!='':
+                message = message + ' ' + self._satelite3.get_message().pop(size_max_message-1)
+
+
+        return message[1:] if data_message is not None else None
             
 
     def trilateracion(self, point_a, dist_a, point_b, dist_b, point_c, dist_c):
         """
             :param parser: Point_a Point_b Point_c Distance_a Distance_b Distance_c
-            :return: {x:Float, y:Float} Longitude and Latitude
+            :return: Float, Float Longitude and Latitude
         """
-        earthR = 6371  
+        earthR = 6371
+        lat = None
+        lon = None
+        try:
+            xA = earthR *(math.cos(math.radians(point_a['y'])) * math.cos(math.radians(point_a['x'])))
+            yA = earthR *(math.cos(math.radians(point_a['y'])) * math.sin(math.radians(point_a['x'])))
+            zA = earthR *(math.sin(math.radians(point_a['y'])))
 
-        xA = earthR *(math.cos(math.radians(point_a['y'])) * math.cos(math.radians(point_a['x'])))
-        yA = earthR *(math.cos(math.radians(point_a['y'])) * math.sin(math.radians(point_a['x'])))
-        zA = earthR *(math.sin(math.radians(point_a['y'])))
+            xB = earthR *(math.cos(math.radians(point_b['y'])) * math.cos(math.radians(point_b['x'])))
+            yB = earthR *(math.cos(math.radians(point_b['y'])) * math.sin(math.radians(point_b['x'])))
+            zB = earthR *(math.sin(math.radians(point_b['y'])))
 
-        xB = earthR *(math.cos(math.radians(point_b['y'])) * math.cos(math.radians(point_b['x'])))
-        yB = earthR *(math.cos(math.radians(point_b['y'])) * math.sin(math.radians(point_b['x'])))
-        zB = earthR *(math.sin(math.radians(point_b['y'])))
+            xC = earthR *(math.cos(math.radians(point_c['y'])) * math.cos(math.radians(point_c['x'])))
+            yC = earthR *(math.cos(math.radians(point_c['y'])) * math.sin(math.radians(point_c['x'])))
+            zC = earthR *(math.sin(math.radians(point_c['y'])))
 
-        xC = earthR *(math.cos(math.radians(point_c['y'])) * math.cos(math.radians(point_c['x'])))
-        yC = earthR *(math.cos(math.radians(point_c['y'])) * math.sin(math.radians(point_c['x'])))
-        zC = earthR *(math.sin(math.radians(point_c['y'])))
+            P1 = numpy.array([xA, yA, zA])
+            P2 = numpy.array([xB, yB, zB])
+            P3 = numpy.array([xC, yC, zC])
 
-        P1 = numpy.array([xA, yA, zA])
-        P2 = numpy.array([xB, yB, zB])
-        P3 = numpy.array([xC, yC, zC])
+            #from wikipedia
+            #transform to get circle 1 at origin
+            #transform to get circle 2 on x axis
+            ex = (P2 - P1)/(numpy.linalg.norm(P2 - P1))
+            i = numpy.dot(ex, P3 - P1)
+            ey = (P3 - P1 - i*ex)/(numpy.linalg.norm(P3 - P1 - i*ex))
+            ez = numpy.cross(ex,ey)
+            d = numpy.linalg.norm(P2 - P1)
+            j = numpy.dot(ey, P3 - P1)
 
-        #from wikipedia
-        #transform to get circle 1 at origin
-        #transform to get circle 2 on x axis
-        ex = (P2 - P1)/(numpy.linalg.norm(P2 - P1))
-        i = numpy.dot(ex, P3 - P1)
-        ey = (P3 - P1 - i*ex)/(numpy.linalg.norm(P3 - P1 - i*ex))
-        ez = numpy.cross(ex,ey)
-        d = numpy.linalg.norm(P2 - P1)
-        j = numpy.dot(ey, P3 - P1)
+            #from wikipedia
+            #plug and chug using above values
+            x = (pow(dist_a,2) - pow(dist_b,2) + pow(d,2))/(2*d)
+            y = ((pow(dist_a,2) - pow(dist_c,2) + pow(i,2) + pow(j,2))/(2*j)) - ((i/j)*x)
 
-        #from wikipedia
-        #plug and chug using above values
-        x = (pow(dist_a,2) - pow(dist_b,2) + pow(d,2))/(2*d)
-        y = ((pow(dist_a,2) - pow(dist_c,2) + pow(i,2) + pow(j,2))/(2*j)) - ((i/j)*x)
+            # only one case shown here
+            z = numpy.sqrt(abs(pow(dist_a,2) - pow(x,2) - pow(y,2)))
 
-        # only one case shown here
-        z = numpy.sqrt(pow(dist_a,2) - pow(x,2) - pow(y,2))
+            #triPt is an array with ECEF x,y,z of trilateration point
+            triPt = P1 + x*ex + y*ey + z*ez
 
-        #triPt is an array with ECEF x,y,z of trilateration point
-        triPt = P1 + x*ex + y*ey + z*ez
+            #convert back to lat/long from ECEF
+            #convert to degrees
+            lat = math.degrees(math.asin(int(abs(triPt[2]) / earthR)))
+            lon = math.degrees(math.atan2(triPt[1],triPt[0]))
+        except Exception:
+            print(traceback.format_exc())
+            lat = None
+            lon = None
 
-        #convert back to lat/long from ECEF
-        #convert to degrees
-        lat = math.degrees(math.asin(triPt[2] / earthR))
-        lon = math.degrees(math.atan2(triPt[1],triPt[0]))
-
-        return {'x':lat, 'y':lon}
+        return lat, lon
