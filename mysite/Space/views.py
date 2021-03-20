@@ -1,3 +1,4 @@
+import traceback
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -100,6 +101,7 @@ class TopSecret(APIView):
             satelite_three.save()
             return satelite_one, satelite_two, satelite_three
         except Exception:
+            print(traceback.format_exc())
             return None, None, None
 
     def post(self, request, format=None):
