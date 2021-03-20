@@ -107,7 +107,7 @@ class TopSecret(APIView):
     def post(self, request, format=None):
         """
            :param request:
-           :param format:
+           :param format:10
            :return: message and positions
         """
         if 'satelites' in request.data:

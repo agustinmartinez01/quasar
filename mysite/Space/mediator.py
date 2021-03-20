@@ -103,8 +103,9 @@ class ConcreteMediator(Mediator):
             size_min_message = min(min(len(self._satelite1.get_message()), len(self._satelite2.get_message())), len(self._satelite3.get_message()))
             size_max_message = max(max(len(self._satelite1.get_message()), len(self._satelite2.get_message())),
                                    len(self._satelite3.get_message()))
-            print(size_min_message-1)
-            for index in list(range(size_min_message-1)):
+
+            print("size", size_min_message, len(self._satelite1.get_message()), len(self._satelite2.get_message()), len(self._satelite2.get_message()))
+            for index in list(range(size_min_message)):
                 data_message = self.get_phrase(self._satelite1.get_message(), self._satelite2.get_message(), self._satelite3.get_message(), index)
                 if data_message is not None:
                     message = message+" " + data_message

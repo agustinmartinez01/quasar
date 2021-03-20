@@ -18,7 +18,7 @@ class Satelite(models.Model):
 
 
     def set_message(self, message_input):
-        self.message = message_input
+        self._message = message_input
 
     
     def set_point(self, latitude, _longitude):
