@@ -2,21 +2,18 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from Space.models import Satelite
+from Space.mediator import ConcreteMediator
 from Space.serializers import (
     SateliteReadSerializer,
     SateliteWriteSerializer,
 )
-from Space.mediator import ConcreteMediator
-# Create your views here.
+
 
 class SpaceViewSet(viewsets.ModelViewSet):
     """
-    VQtoCQirrelevanceRelationViewSet
+        SpaceViewSet
 
-    ModelViewSet
-    for VQtoCQirrelevanceRelation object, Include
-        list(), create(), destroy()
-    operations
+        ModelViewSet for SpaceViewSet object, Include list(), create(), update() and retrieve() operations
     """
     queryset = Satelite.objects.all()
     lookup_field = 'id'
@@ -39,7 +36,6 @@ class SpaceViewSet(viewsets.ModelViewSet):
         except (KeyError, AttributeError):
             return super().get_serializer_class()
 
-
     def custom_perform_create(self, serializer):
         return serializer.save()
 
@@ -55,7 +51,6 @@ class SpaceViewSet(viewsets.ModelViewSet):
             return Response({'Data invalid': request.data}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({'data: ':request.data} , status=status.HTTP_201_CREATED)
-
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -82,39 +77,46 @@ class SpaceViewSet(viewsets.ModelViewSet):
 
 
 class TopSecret(APIView):
+    """
+        TopSecret
 
+        APIView for TopSecret object, Include post() operations
+    """
     def update_satelites(self, data):
         try:
             satelite_one = Satelite.objects.get(name=data['satelites'][0]['name'])
-            satelite_one._message = data['satelites'][0]['message']
-            satelite_one._distance = data['satelites'][0]['distance']
+            satelite_one.set_distance(data['satelites'][0]['distance'])
+            satelite_one.set_message(data['satelites'][0]['message'])
             satelite_one.save()
 
             satelite_two = Satelite.objects.get(name=data['satelites'][1]['name'])
-            satelite_two._message = data['satelites'][1]['message']
-            satelite_two._distance = data['satelites'][1]['distance']
+            satelite_two.set_distance(data['satelites'][1]['distance'])
+            satelite_two.set_message(data['satelites'][1]['message'])
             satelite_two.save()
 
             satelite_three = Satelite.objects.get(name=data['satelites'][2]['name'])
-            satelite_three._message = data['satelites'][2]['message']
-            satelite_three._distance = data['satelites'][2]['distance']
+            satelite_three.set_distance(data['satelites'][2]['distance'])
+            satelite_three.set_message(data['satelites'][2]['message'])
             satelite_three.save()
             return satelite_one, satelite_two, satelite_three
         except Exception:
             return None, None, None
 
-
     def post(self, request, format=None):
-        print("data", request.data)
+        """
+           :param request:
+           :param format:
+           :return: message and positions
+        """
         if 'satelites' in request.data:
             if len(request.data['satelites'])>2:
                 satelite_one, satelite_two, satelite_three = self.update_satelites(request.data)
                 if satelite_one is not  None and satelite_two is not None and satelite_three is not None:
                     satelites = ConcreteMediator(satelite_one, satelite_two, satelite_three)
                     message = satelites.get_message()
-                    position = satelites.get_location()
-                    if message != "":
-                        return Response({'message: ': message, 'position':position}, status=status.HTTP_200_OK)
+                    lat, lon = satelites.get_location()
+                    if message is not None and lat is not  None and lon is not  None:
+                        return Response({'message: ': message, 'position':{'lat:':lat, 'lon':lon}}, status=status.HTTP_200_OK)
                     else:
                         return Response('Fails resolve message: ', status=status.HTTP_404_NOT_FOUND)
                 else:
@@ -126,5 +128,26 @@ class TopSecret(APIView):
 
 
 
+class TopSecretSplit(APIView):
+    """
+        TopSecretSplit
 
+        APIView for TopSecretSplit object, Include post() and get() operations
+    """
+    def post(self, request, format=None):
+        try:
+            satelite = Satelite.objects.get(name=request.data['name'])
+            satelite.set_message(request.data['message'])
+            satelite.set_distance(request.data['distance'])
+            satelite.save()
+            return Response({'Satelite':satelite.name}, status=status.HTTP_200_OK)
+        except Exception:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, *args, **kwargs):
+        try:
+            satelite = Satelite.objects.get(name=request.META['PATH_INFO'][21:])
+        except Exception:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({'distance':satelite.get_distance(), 'message':satelite.get_message()},status=status.HTTP_200_OK)
 
