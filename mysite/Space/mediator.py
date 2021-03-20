@@ -113,9 +113,9 @@ class ConcreteMediator(Mediator):
 
             if data_message is not None and len(self._satelite1.get_message()) == size_max_message  and self._satelite1.get_message()[size_max_message-1]!='':
                 message = message + ' ' + self._satelite1.get_message().pop(size_max_message-1)
-            elif len(self._satelite2.get_message()) ==size_max_message and self._satelite2.get_message()[size_max_message-1]!='':
+            elif data_message is not None and len(self._satelite2.get_message()) ==size_max_message and self._satelite2.get_message()[size_max_message-1]!='':
                 message = message + ' ' + self._satelite2.get_message().pop(size_max_message-1)
-            elif len(self._satelite3.get_message()) ==size_max_message and self._satelite3.get_message()[size_max_message-1]!='':
+            elif data_message is not None and len(self._satelite3.get_message()) ==size_max_message and self._satelite3.get_message()[size_max_message-1]!='':
                 message = message + ' ' + self._satelite3.get_message().pop(size_max_message-1)
 
 
