@@ -41,17 +41,22 @@ class SpaceViewSet(viewsets.ModelViewSet):
         return serializer.save()
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        satelites = Satelite.objects.all()
+        if satelites.count()<=2:
 
-        if serializer.is_valid(raise_exception=True):
-            try:
-                self.custom_perform_create(serializer)
-            except Exception:
+            serializer = self.get_serializer(data=request.data)
+
+            if serializer.is_valid(raise_exception=True):
+                try:
+                    self.custom_perform_create(serializer)
+                except Exception:
+                    return Response({'Data invalid': request.data}, status=status.HTTP_400_BAD_REQUEST)
+            else:
                 return Response({'Data invalid': request.data}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({'Data invalid': request.data}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({'data: ':request.data} , status=status.HTTP_201_CREATED)
+            return Response({'data: ':request.data} , status=status.HTTP_201_CREATED)
+        else:
+            return Response({'satellite limit exceeded': request.data}, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
