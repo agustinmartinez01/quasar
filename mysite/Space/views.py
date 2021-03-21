@@ -142,14 +142,24 @@ class TopSecretSplit(APIView):
             satelite.set_message(request.data['message'])
             satelite.set_distance(request.data['distance'])
             satelite.save()
-            return Response({'Satelite':satelite.name}, status=status.HTTP_200_OK)
+            return Response({'satelite':satelite.get_name(), 'distance':satelite.get_distance()}, status=status.HTTP_200_OK)
         except Exception:
+            print(traceback.format_exc())
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def get(self, request, *args, **kwargs):
         try:
             satelite = Satelite.objects.get(name=request.META['PATH_INFO'][21:])
+            satelites = Satelite.objects.all().order_by('id')
+            list_satelites = (list(satelites))
+            print(list_satelites)
+            concrete_space = ConcreteMediator(list_satelites[0], list_satelites[1], list_satelites[2])
+            message = concrete_space.get_message()
+            lat, lon = concrete_space.get_location()
+            print(message)
+            return Response({'message': message, 'position': str(lat)+" - "+str(lon)}, status=status.HTTP_200_OK)
         except Exception:
+            print(traceback.format_exc())
             return Response(status=status.HTTP_404_NOT_FOUND)
-        return Response({'distance':satelite.get_distance(), 'message':satelite.get_message()},status=status.HTTP_200_OK)
+
 

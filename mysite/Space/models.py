@@ -41,3 +41,6 @@ class Satelite(models.Model):
 
     def get_message(self):
         return self._message
+
+    def get_name(self):
+        return self.name

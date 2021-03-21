@@ -103,8 +103,6 @@ class ConcreteMediator(Mediator):
             size_min_message = min(min(len(self._satelite1.get_message()), len(self._satelite2.get_message())), len(self._satelite3.get_message()))
             size_max_message = max(max(len(self._satelite1.get_message()), len(self._satelite2.get_message())),
                                    len(self._satelite3.get_message()))
-
-            print("size", size_min_message, len(self._satelite1.get_message()), len(self._satelite2.get_message()), len(self._satelite2.get_message()))
             for index in list(range(size_min_message)):
                 data_message = self.get_phrase(self._satelite1.get_message(), self._satelite2.get_message(), self._satelite3.get_message(), index)
                 if data_message is not None:
@@ -119,8 +117,8 @@ class ConcreteMediator(Mediator):
             elif data_message is not None and len(self._satelite3.get_message()) ==size_max_message and self._satelite3.get_message()[size_max_message-1]!='':
                 message = message + ' ' + self._satelite3.get_message().pop(size_max_message-1)
 
-
-        return message[1:] if data_message is not None else None
+        print(message)
+        return message[1:] if message != '' else None
             
 
     def trilateracion(self, point_a, dist_a, point_b, dist_b, point_c, dist_c):
