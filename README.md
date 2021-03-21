@@ -3,11 +3,11 @@
 ## Arquitectura de Software
 
 A continuaciòn se exponen una vista de la arquitectura Api Rest Django 
-![Screenshot](https://drive.google.com/file/d/1VSUsNQA1D8Ew2BgnGhOQYACbKyFZKDCT/view?usp=sharing)
+![Screenshot]("https://drive.google.com/file/d/1VSUsNQA1D8Ew2BgnGhOQYACbKyFZKDCT/preview")
 
 Aqui se muestra el diagrama de clases utilizada (Patron de diseño Mediator)
 
-![Screenshot](https://drive.google.com/file/d/1qtDHeoWrgNzTRNARu872AO_NQTxELyaH/view?usp=sharing)
+![Screenshot](https://drive.google.com/file/d/1qtDHeoWrgNzTRNARu872AO_NQTxELyaH/preview")
 
 
 Deploy AWS EC2 Djando Rest Api
