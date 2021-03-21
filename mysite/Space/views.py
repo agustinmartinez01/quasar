@@ -122,7 +122,7 @@ class TopSecret(APIView):
                     satelites = ConcreteMediator(satelite_one, satelite_two, satelite_three)
                     message = satelites.get_message()
                     lat, lon = satelites.get_location()
-                    if message is not None and lat is not  None and lon is not  None:
+                    if message is not None:
                         return Response({'message: ': message, 'position':{'lat:':lat, 'lon':lon}}, status=status.HTTP_200_OK)
                     else:
                         return Response('Fails resolve message: ', status=status.HTTP_404_NOT_FOUND)

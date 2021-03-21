@@ -100,9 +100,19 @@ class ConcreteMediator(Mediator):
         message = ''
         data_message = None
         if self.get_all_message():
+
             size_min_message = min(min(len(self._satelite1.get_message()), len(self._satelite2.get_message())), len(self._satelite3.get_message()))
             size_max_message = max(max(len(self._satelite1.get_message()), len(self._satelite2.get_message())),
                                    len(self._satelite3.get_message()))
+            if len(self._satelite1.get_message()) == size_max_message and self._satelite1.get_message()[0]=='':
+                message_satelite = self._satelite1.get_message()
+                self._satelite1.set_message(message_satelite[1:])
+            if len(self._satelite2.get_message()) == size_max_message and self._satelite2.get_message()[0]=='':
+                message_satelite = self._satelite2.get_message()
+                self._satelite2.set_message(message_satelite[1:])
+            if len(self._satelite3.get_message()) == size_max_message and self._satelite3.get_message()[0] == '':
+                message_satelite = self._satelite3.get_message()
+                self._satelite3.set_message(message_satelite[1:])
             for index in list(range(size_min_message)):
                 data_message = self.get_phrase(self._satelite1.get_message(), self._satelite2.get_message(), self._satelite3.get_message(), index)
                 if data_message is not None:
@@ -110,14 +120,6 @@ class ConcreteMediator(Mediator):
                 else:
                     break
 
-            if data_message is not None and len(self._satelite1.get_message()) == size_max_message  and self._satelite1.get_message()[size_max_message-1]!='':
-                message = message + ' ' + self._satelite1.get_message().pop(size_max_message-1)
-            elif data_message is not None and len(self._satelite2.get_message()) ==size_max_message and self._satelite2.get_message()[size_max_message-1]!='':
-                message = message + ' ' + self._satelite2.get_message().pop(size_max_message-1)
-            elif data_message is not None and len(self._satelite3.get_message()) ==size_max_message and self._satelite3.get_message()[size_max_message-1]!='':
-                message = message + ' ' + self._satelite3.get_message().pop(size_max_message-1)
-
-        print(message)
         return message[1:] if message != '' else None
             
 
@@ -126,54 +128,33 @@ class ConcreteMediator(Mediator):
             :param parser: Point_a Point_b Point_c Distance_a Distance_b Distance_c
             :return: Float, Float Longitude and Latitude
         """
-        earthR = 6371
-        lat = None
-        lon = None
-        try:
-            xA = earthR *(math.cos(math.radians(point_a['y'])) * math.cos(math.radians(point_a['x'])))
-            yA = earthR *(math.cos(math.radians(point_a['y'])) * math.sin(math.radians(point_a['x'])))
-            zA = earthR *(math.sin(math.radians(point_a['y'])))
 
-            xB = earthR *(math.cos(math.radians(point_b['y'])) * math.cos(math.radians(point_b['x'])))
-            yB = earthR *(math.cos(math.radians(point_b['y'])) * math.sin(math.radians(point_b['x'])))
-            zB = earthR *(math.sin(math.radians(point_b['y'])))
-
-            xC = earthR *(math.cos(math.radians(point_c['y'])) * math.cos(math.radians(point_c['x'])))
-            yC = earthR *(math.cos(math.radians(point_c['y'])) * math.sin(math.radians(point_c['x'])))
-            zC = earthR *(math.sin(math.radians(point_c['y'])))
-
-            P1 = numpy.array([xA, yA, zA])
-            P2 = numpy.array([xB, yB, zB])
-            P3 = numpy.array([xC, yC, zC])
-
-            #from wikipedia
-            #transform to get circle 1 at origin
-            #transform to get circle 2 on x axis
-            ex = (P2 - P1)/(numpy.linalg.norm(P2 - P1))
-            i = numpy.dot(ex, P3 - P1)
-            ey = (P3 - P1 - i*ex)/(numpy.linalg.norm(P3 - P1 - i*ex))
-            ez = numpy.cross(ex,ey)
-            d = numpy.linalg.norm(P2 - P1)
-            j = numpy.dot(ey, P3 - P1)
-
-            #from wikipedia
-            #plug and chug using above values
-            x = (pow(dist_a,2) - pow(dist_b,2) + pow(d,2))/(2*d)
-            y = ((pow(dist_a,2) - pow(dist_c,2) + pow(i,2) + pow(j,2))/(2*j)) - ((i/j)*x)
-
-            # only one case shown here
-            z = numpy.sqrt(abs(pow(dist_a,2) - pow(x,2) - pow(y,2)))
-
-            #triPt is an array with ECEF x,y,z of trilateration point
-            triPt = P1 + x*ex + y*ey + z*ez
-
-            #convert back to lat/long from ECEF
-            #convert to degrees
-            lat = math.degrees(math.asin(int(abs(triPt[2]) / earthR)))
-            lon = math.degrees(math.atan2(triPt[1],triPt[0]))
-        except Exception:
-            print(traceback.format_exc())
-            lat = None
-            lon = None
-
-        return lat, lon
+        """se localiza el dispositivo por medio de las
+           fuerzas de las senales captadas y de la ubicacion de
+           las antenas
+           Documentacion http://cecilia-urbina.blogspot.com/2013/05/geolocalizacion-por-trilateracion.html
+            """
+        x =None
+        y = None
+        d = 3
+        i = 2.5
+        j = -4
+        # se definen las coordenadas de la Antena A
+        ax = point_a['x']
+        ay = point_a['y']
+        # se define la cobertura Antena A
+        ar = dist_a
+        # se definen las coordenadas de la Antena B
+        bx = point_b['x']
+        by = point_b['y']
+        # se define la cobertura Antena B
+        br = dist_b
+        # se definen las coordenadas de la Antena C
+        cx = point_c['x']
+        cy = point_c['y']
+        # se define la cobertura de la Antena c
+        cr = dist_c
+        # se localiza la ubicacion del receptor
+        x = (ar ** 2 - br ** 2 + d ** 2) / float((2 * d))
+        y = ((ar ** 2 - br ** 2 + i ** 2 + j ** 2) / (2 * j)) - ((float(i / j)) * x)
+        return x, y
