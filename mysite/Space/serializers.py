@@ -11,7 +11,7 @@ class SateliteReadSerializer(serializers.ModelSerializer):
     distance = serializers.FloatField(source='_distance')
     class Meta:
         model = Satelite
-        fields = ('name', 'latitude', 'longitude', 'message', 'distance')
+        fields = ('id','name', 'latitude', 'longitude', 'message', 'distance')
 
 
 class SateliteWriteSerializer(serializers.ModelSerializer):

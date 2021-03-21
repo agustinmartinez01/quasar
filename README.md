@@ -30,6 +30,18 @@ Deploy AWS EC2 Djando Rest Api
 		"longitude":Float
 		}
 	```
+* Method Put -> http://ec2-18-191-118-253.us-east-2.compute.amazonaws.com/api/satelite/id
+ -> Guarda un satelite en la base de datos
+ 	Body :
+ 	```json
+ 	{
+ 		"name":String,
+ 		"latitude":Float,
+		"longitude":Float
+		"message":[String]
+		"distance":Float
+		}
+	```
 
 * Method Post -> http://ec2-18-191-118-253.us-east-2.compute.amazonaws.com/api/topsecret/ 
 	* Devuelve el mensaje desifrado en caso de poder con la posición
