@@ -3,9 +3,15 @@ from Space.models import Satelite
 from django.core.exceptions import ValidationError
 
 class SateliteReadSerializer(serializers.ModelSerializer):
+
+    name = serializers.CharField(required=True)
+    latitude = serializers.FloatField(source='_latitude')
+    longitude = serializers.FloatField(source='_longitude')
+    message = serializers.CharField(source='_message')
+    distance = serializers.FloatField(source='_distance')
     class Meta:
         model = Satelite
-        fields = '__all__'
+        fields = ('name', 'latitude', 'longitude', 'message', 'distance')
 
 
 class SateliteWriteSerializer(serializers.ModelSerializer):
