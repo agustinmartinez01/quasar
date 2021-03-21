@@ -18,7 +18,7 @@ Deploy AWS EC2 Djando Rest Api
 
  * Method GET -> http://ec2-18-191-118-253.us-east-2.compute.amazonaws.com/api/satelite/ 
  	* Listado de satelites disponible en la base de datos
- * Method GET -> http://ec2-18-191-118-253.us-east-2.compute.amazonaws.com/api/satelite/<id> 
+ * Method GET -> http://ec2-18-191-118-253.us-east-2.compute.amazonaws.com/api/satelite/id 
  	* satelite disponible en la base de datos
  * Method Post -> http://ec2-18-191-118-253.us-east-2.compute.amazonaws.com/api/satelite/ 
  -> Guarda un satelite en la base de datos
@@ -38,7 +38,7 @@ Deploy AWS EC2 Djando Rest Api
 	{
 		'satelites':[
 			{
-			 'name':<String>,
+			 "name":<String>,
 			 "message":[String],
 			 "distance": Float
 			},
