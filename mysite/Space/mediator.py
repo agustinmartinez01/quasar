@@ -119,7 +119,6 @@ class ConcreteMediator(Mediator):
                     message = message+" " + data_message
                 else:
                     break
-
         return message[1:] if message != '' else None
             
 

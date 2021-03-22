@@ -85,12 +85,7 @@ class SateliteApiTest(TestCase):
                 "message":["", "", "un", "", "secreto"],
                 "distance": 115.5
                 },
-                {
-                "name":"Arsat2",
-                "message":[ "", "", "", "mensaje"],
-                "distance":142.7
 
-                }
             ]
 
         }
@@ -98,8 +93,7 @@ class SateliteApiTest(TestCase):
         self.client.post(SATELITE_URLS['create'], satelite1)
         self.client.post(SATELITE_URLS['create'], satelite2)
         response = self.client.post(TOPSECRET_URLS['post'], data, format='json')
-        print(response)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_top_secret_successful(self):
         """Create a Satelite successfully.
