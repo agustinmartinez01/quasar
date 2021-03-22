@@ -157,11 +157,9 @@ class TopSecretSplit(APIView):
             satelite = Satelite.objects.get(name=request.META['PATH_INFO'][21:])
             satelites = Satelite.objects.all().order_by('id')
             list_satelites = (list(satelites))
-            print(list_satelites)
             concrete_space = ConcreteMediator(list_satelites[0], list_satelites[1], list_satelites[2])
             message = concrete_space.get_message()
             lat, lon = concrete_space.get_location()
-            print(message)
             return Response({'message': message, 'position': str(lat)+" - "+str(lon)}, status=status.HTTP_200_OK)
         except Exception:
             print(traceback.format_exc())

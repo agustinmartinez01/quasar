@@ -155,6 +155,9 @@ class ConcreteMediator(Mediator):
         # se define la cobertura de la Antena c
         cr = dist_c
         # se localiza la ubicacion del receptor
-        x = (ar ** 2 - br ** 2 + d ** 2) / float((2 * d))
-        y = ((ar ** 2 - br ** 2 + i ** 2 + j ** 2) / (2 * j)) - ((float(i / j)) * x)
+        try:
+            x = (ar ** 2 - br ** 2 + d ** 2) / float((2 * d))
+            y = ((ar ** 2 - br ** 2 + i ** 2 + j ** 2) / (2 * j)) - ((float(i / j)) * x)
+        except Exception:
+            print(traceback.format_exc())
         return x, y
