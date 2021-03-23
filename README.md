@@ -13,7 +13,7 @@ Aqui se muestra el diagrama de clases utilizada (Patron de diseño Mediator)
 Deploy AWS EC2 Djando Rest Api
 [Deploy AWS Django] (https://medium.com/saarthi-ai/ec2apachedjango-838e3f6014ab)
 
-## EndPints para su utilizacion
+## EndPoints para su utilización
 
 
  * Method GET -> http://ec2-18-191-118-253.us-east-2.compute.amazonaws.com/api/satelite/ 
@@ -44,7 +44,7 @@ Deploy AWS EC2 Djando Rest Api
 	```
 
 * Method Post -> http://ec2-18-191-118-253.us-east-2.compute.amazonaws.com/api/topsecret/ 
-	* Devuelve el mensaje desifrado en caso de poder con la posición
+	* Devuelve el mensaje decifrado en caso de poder con la posición
 	Body: 
 	```json
 	{
@@ -80,4 +80,5 @@ Deploy AWS EC2 Djando Rest Api
 		 "distance": Float
 		}
 	```
-			
+## EndPoints para su utilización
+	python3 manage.py test Space.tests
