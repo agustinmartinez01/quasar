@@ -80,5 +80,5 @@ Deploy AWS EC2 Djando Rest Api
 		 "distance": Float
 		}
 	```
-## EndPoints para su utilización
+## Comando para correr Test
 	python3 manage.py test Space.tests
